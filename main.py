@@ -34,10 +34,13 @@ def file_save(im):
 
 
 def split(im):
+    threshold = 1
+    min_size = 9
     fn = "blurred.png"
     imgLab = cv2.cvtColor(im, cv2.COLOR_BGR2LAB)
     blurred = cv2.GaussianBlur(imgLab, (5, 5), 0)
-    imgLab = cv2.cvtColor(blurred, cv2.COLOR_LAB2RGB)
+    imgLab = cv2.cvtColor(blurred, cv2.COLOR_LAB2BGR)
+    imgLab = cv2.cvtColor(imgLab, cv2.COLOR_BGR2HSV)
     blurred = Image.fromarray(imgLab)
     abs_path = os.path.abspath(fn)
     blurred.save(abs_path)
@@ -46,24 +49,18 @@ def split(im):
     save_tiles(tiles, prefix='', directory="C:/Users/Kate/Pictures/slices_1", format='png')
     for tile in tiles:
         tmp = np.array(tile.image)
-        red = []
-        green = []
-        blue = []
-        print(np.shape(blue))
-        np.append(blue, 6)
-        print(np.shape(blue))
+        value = []
+        block = np.zeros((np.shape(tmp)))
+        print(np.shape(block))
         for x in range(tmp.shape[0]):
             for y in range(tmp.shape[1]):
-                (b, g, r) = tmp[x, y]
+                (h, s, v) = tmp[x, y]
                 #print(b, g, r)
-                red.append(r)
-                green.append(g)
-                blue.append(b)
-            std_dev_r = np.std(red)
+                value.append(v)
+                std_dev_v = np.std(value)
             #print(red)
-            std_dev_g = np.std(green)
-            std_dev_b = np.std(blue)
-            print(std_dev_r, std_dev_g, std_dev_b)
+        print(std_dev_v)
+        for x in rang
 
 
 
