@@ -34,14 +34,14 @@ def file_save(im):
 
 
 def split(im):
-    threshold = 1
+    threshold = 6
     min_size = 9
     fn = "blurred.png"
     imgLab = cv2.cvtColor(im, cv2.COLOR_BGR2LAB)
     blurred = cv2.GaussianBlur(imgLab, (5, 5), 0)
     imgLab = cv2.cvtColor(blurred, cv2.COLOR_LAB2BGR)
-    imgLab = cv2.cvtColor(imgLab, cv2.COLOR_BGR2HSV)
-    blurred = Image.fromarray(imgLab)
+    imgHSV = cv2.cvtColor(imgLab, cv2.COLOR_BGR2HSV)
+    blurred = Image.fromarray(imgHSV)
     abs_path = os.path.abspath(fn)
     blurred.save(abs_path)
     tiles = slice("blurred.png", 4)
@@ -51,18 +51,28 @@ def split(im):
         tmp = np.array(tile.image)
         value = []
         block = np.zeros((np.shape(tmp)))
-        print(np.shape(block))
+        #print(np.shape(block))
         for x in range(tmp.shape[0]):
             for y in range(tmp.shape[1]):
                 (h, s, v) = tmp[x, y]
                 #print(b, g, r)
                 value.append(v)
-                std_dev_v = np.std(value)
-            #print(red)
-        print(std_dev_v)
-        for x in rang
-
-
+        mean = np.mean(value)
+        for x in range(tmp.shape[0]):
+            for y in range(tmp.shape[1]):
+                (h, s, v) = tmp[x, y]
+                if v - mean > threshold:
+                    block[x, y] = 1
+        #print(block)
+        #print(mean)
+        summa = 0
+        for x in range(block.shape[0]):
+            for y in range(block.shape[1]):
+                summa += block[x, y]
+        xxy = int(block.shape[0]*block.shape[1])
+        if summa != xxy and summa != 0 and xxy > min_size:
+            split(tile)
+        #print(block.shape[0]*block.shape[1])
 
 
 image = file_open_cv()
