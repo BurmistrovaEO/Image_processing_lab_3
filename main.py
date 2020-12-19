@@ -68,7 +68,8 @@ def split(im):
         summa = 0
         for x in range(block.shape[0]):
             for y in range(block.shape[1]):
-                summa += block[x, y]
+                summa += int(block[x][y][2])
+        print(summa)
         xxy = int(block.shape[0]*block.shape[1])
         if summa != xxy and summa != 0 and xxy > min_size:
             split(tile)
