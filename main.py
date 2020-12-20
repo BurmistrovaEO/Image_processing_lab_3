@@ -2,6 +2,7 @@ from PIL import Image, ImageDraw
 from tkinter.filedialog import asksaveasfile
 from tkinter.filedialog import askopenfilename
 import os
+from anytree import Node, RenderTree
 import cv2
 from pathlib import Path
 import random
@@ -35,15 +36,10 @@ def file_save(im):
 
 def split(im):
     threshold = 6
-    min_size = 9
+    min_size = 400
     fn = "blurred.png"
-    imgLab = cv2.cvtColor(im, cv2.COLOR_BGR2LAB)
-    blurred = cv2.GaussianBlur(imgLab, (5, 5), 0)
-    imgLab = cv2.cvtColor(blurred, cv2.COLOR_LAB2BGR)
-    imgHSV = cv2.cvtColor(imgLab, cv2.COLOR_BGR2HSV)
-    blurred = Image.fromarray(imgHSV)
     abs_path = os.path.abspath(fn)
-    blurred.save(abs_path)
+    im.save(abs_path)
     tiles = slice("blurred.png", 4)
     #print(tiles[1])
     save_tiles(tiles, prefix='', directory="C:/Users/Kate/Pictures/slices_1", format='png')
@@ -76,5 +72,11 @@ def split(im):
         #print(block.shape[0]*block.shape[1])
 
 
+
 image = file_open_cv()
-split(image)
+imgLab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+blurred = cv2.GaussianBlur(imgLab, (5, 5), 0)
+imgLab = cv2.cvtColor(blurred, cv2.COLOR_LAB2BGR)
+imgHSV = cv2.cvtColor(imgLab, cv2.COLOR_BGR2HSV)
+blurred = Image.fromarray(imgHSV)
+split(blurred)
